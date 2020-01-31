@@ -14,18 +14,15 @@ class ThreadsController extends Controller
         return view('threads.index',compact('threads'));
     }
 
-
     public function create()
     {
         //
     }
 
-
     public function store(Request $request)
     {
 
     }
-
 
     public function show(Thread $thread)
     {
@@ -33,18 +30,14 @@ class ThreadsController extends Controller
         return view('threads.show',compact('thread'));
     }
 
-
     public function edit(Thread $thread)
     {
         //
     }
-
-
     public function update(Request $request, Thread $thread)
     {
         //
     }
-
 
     public function destroy(Thread $thread)
     {
