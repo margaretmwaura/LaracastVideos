@@ -10,7 +10,7 @@ class ThreadsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth')->only('store');
+        $this->middleware('auth')->except(['index','show']);
     }
 
     public function index()
@@ -21,7 +21,7 @@ class ThreadsController extends Controller
 
     public function create()
     {
-        //
+        return view('threads.create');
     }
 
     public function store(Request $request)
