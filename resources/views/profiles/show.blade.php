@@ -10,25 +10,13 @@
                 </div>
 
 
-                @foreach($threads as $thread)
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <div class="level">
-                        <span class="flex">
-                             <a href="{{ route('profile',$thread->creator) }}">{{ $thread->creator->name }}</a> posted :
-                             <a href="{{ $thread->path() }}">{{ $thread->title }}</a>
-                        </span>
-                                <span>
-                            {{ $thread->created_at->diffForHumans() }}
-                        </span>
-                            </div>
+                @foreach($activities as $date =>$activity)
+                    <h3 class="page-header">{{ $date }}</h3>
+                    @foreach($activity as $record)
+                    @include("profiles.activities.{$record->type}",['activity'=>$record])
 
-                        </div>
-
-                        <div class="panel-body"> {{ $thread->body }}</div>
-                    </div>
+                    @endforeach
                 @endforeach
-                {{  $threads->links() }}
             </div>
         </div>
 
