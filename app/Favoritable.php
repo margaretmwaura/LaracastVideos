@@ -7,6 +7,7 @@ namespace App;
 trait Favoritable
 {
 
+
     public function isFavorited()
     {
         return !!$this->favorites->where('user_id', auth()->id())->count();
