@@ -1,6 +1,6 @@
 @component('profiles.activities.activity')
     @slot('heading')
-        <a href="{{ $activity->subject->path() }}"> {{ $profileUser->name }} published a thread</a>
+        <a href="{{ $activity->subject->path() }}"> {{ $profileUser->name }} published a thread {{ $activity->subject->title }}</a>
     @endslot
 
     @slot('body')
