@@ -32,9 +32,11 @@
         @yield('content')
 
         <flash message="{{ session('flash') }}"></flash>
+{{--        <flash message="We are doing great"></flash>--}}
     </div>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ mix('/js/app.js') }}"></script>
 </body>
 </html>
