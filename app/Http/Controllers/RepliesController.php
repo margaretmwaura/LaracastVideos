@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Reply;
 use App\Thread;
+use http\Env\Response;
 use Illuminate\Http\Request;
 
 class RepliesController extends Controller
@@ -26,5 +28,22 @@ class RepliesController extends Controller
             ]);
 
         return back();
+    }
+
+    public function destroy(Reply $reply)
+    {
+        $this->authorize('update',$reply);
+       $reply->delete();
+       if(request()->expectsJson())
+       {
+           return response(['status'=>'Reply deleted']);
+       }
+       return back();
+    }
+
+    public function update(Reply $reply)
+    {
+        $this->authorize('update',$reply);
+        $reply->update(['body' => request('body')]);
     }
 }

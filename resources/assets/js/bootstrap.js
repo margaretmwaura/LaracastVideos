@@ -54,6 +54,7 @@ if (token) {
 //     encrypted: true
 // });
 
+window.Vue = require('vue');
 window.events = new Vue();
 
 window.flash = function (message) {
