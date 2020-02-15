@@ -22,11 +22,14 @@ class RepliesController extends Controller
             ]
         );
 
-        $thread->addReply([
+       $reply=$thread->addReply([
             'body'=> \request('body'),
             'user_id' => auth()->id()
             ]);
 
+        if(\request()->expectsJson()) {
+              return $reply->load('owner');
+          }
         return back();
     }
 
