@@ -114,14 +114,13 @@ class ParticipateInForumTest extends TestCase
     public function users_may_only_reply_a_maximum_of_once_per_minute()
     {
         $this->signIn();
-        $thread=factory('App\Thread')->create();
-        $reply=factory('App\Reply',[
-            'body' => 'My simple reply'
-        ])->make();
+        $thread = create('App\Thread');
+        $reply = make('App\Reply');
 
-        $this->post($thread->path().'/replies',$reply->toArray())
-            ->assertStatus(200);
-        $this->post($thread->path().'/replies',$reply->toArray())
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(302);
+
+        $this->post($thread->path() . '/replies', $reply->toArray())
             ->assertStatus(422);
     }
 }
