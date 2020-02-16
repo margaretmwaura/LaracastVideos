@@ -41,7 +41,7 @@
             {
                 if(!page)
                 {
-                  let query = location.search.match(/page=(\d+)/)[1];
+                  let query = location.search.match(/page=(\d+)/);
 
                   page = query ? query[1] : 1;
                 }
@@ -51,6 +51,8 @@
             {
                 this.dataSet = data;
                 this.items = data.data;
+
+                window.scrollTo(0, 0);
             },
 
         }

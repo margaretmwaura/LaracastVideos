@@ -33,8 +33,8 @@ class ParticipateInForumTest extends TestCase
         $thread=factory('App\Thread')->create();
         $reply=factory('App\Reply')->make();
         $this->post($thread->path().'/replies',$reply->toArray());
-        $this->get($thread->path())
-            ->assertSee($reply->body);
+        $this->assertDatabaseHas('replies',['body'=>$reply->body]);
+        $this->assertEquals(1,$thread->fresh()->replies_count);
     }
 
     /** @test */
@@ -69,6 +69,7 @@ class ParticipateInForumTest extends TestCase
         $this->delete("/replies/{$reply->id}")->assertStatus(302);
 
         $this->assertDatabaseMissing('replies',['id' => $reply->id]);
+        $this->assertEquals(0,$reply->thread->fresh()->replies_count);
     }
 
     /** @test */
@@ -79,6 +80,7 @@ class ParticipateInForumTest extends TestCase
         $this->patch("/replies/{$reply->id}", ['body' => 'You have been changes fool']);
 
         $this->assertDatabaseHas('replies',['id' => $reply->id,'body' => 'You have been changes fool']);
+
     }
 
     /** @test */
