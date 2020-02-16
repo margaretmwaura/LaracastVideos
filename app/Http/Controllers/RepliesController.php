@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Reply;
+use App\Spam;
 use App\Thread;
 use http\Env\Response;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class RepliesController extends Controller
     {
        return $thread->replies()->paginate(10);
     }
-    public function store($channel_id,Thread $thread)
+    public function store($channel_id,Thread $thread , Spam $spam)
     {
         $this->validate(request(),
             [
@@ -26,6 +27,7 @@ class RepliesController extends Controller
             ]
         );
 
+       $spam->detect(\request('body'));
        $reply=$thread->addReply([
             'body'=> \request('body'),
             'user_id' => auth()->id()
