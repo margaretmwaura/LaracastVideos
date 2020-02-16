@@ -27,7 +27,7 @@
                         <div class="panel-body"> {{ $thread->body }}</div>
                     </div>
 
-                    <Replies :data="{{ $thread->replies }}" @removed="repliesCount--" @added="repliesCount++"> </Replies>
+                    <Replies  @removed="repliesCount--" @added="repliesCount++"> </Replies>
 
 
 
