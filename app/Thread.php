@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\Notifications\ThreadWasUpdated;
 use Illuminate\Database\Eloquent\Model;
+use function foo\func;
 
 class Thread extends Model
 {
@@ -45,7 +47,15 @@ class Thread extends Model
 
     public function addReply($reply)
     {
-        return $this->replies()->create($reply);
+        $reply = $this->replies()->create($reply);
+
+        $this->subscriptions
+             ->filter(function ($sub) use ($reply){
+                return $sub->user_id != $reply->user_id;
+            })
+            ->each->notify($reply);
+
+        return $reply;
     }
 
     public function scopeFilter($query,$filters)
@@ -63,6 +73,8 @@ class Thread extends Model
        $this->subscriptions()->create([
            'user_id' => $userId ?: auth()->id()
        ]);
+
+       return $this;
     }
 
     public function getIsSubscribedToAttribute()
