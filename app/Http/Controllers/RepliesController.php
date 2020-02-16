@@ -22,11 +22,19 @@ class RepliesController extends Controller
     public function store($channel_id,Thread $thread , Spam $spam)
     {
 
-        $this->validateReply();
-       $reply=$thread->addReply([
-            'body'=> \request('body'),
-            'user_id' => auth()->id()
+        try {
+            $this->validateReply();
+            $reply=$thread->addReply([
+                'body'=> \request('body'),
+                'user_id' => auth()->id()
             ]);
+        }
+        catch (\Exception $e)
+        {
+            // cannot be processed
+           return response('Sorry your reply could not be saved at this time' , 422);
+        }
+
 
         if(\request()->expectsJson()) {
               return $reply->load('owner');
@@ -48,8 +56,17 @@ class RepliesController extends Controller
     public function update(Reply $reply, Spam $spam)
     {
         $this->authorize('update',$reply);
-        $this->validateReply();
-        $reply->update(['body' => request('body')]);
+
+        try {
+
+            $this->validateReply();
+            $reply->update(['body' => request('body')]);
+
+        }catch (\Exception $exception)
+        {
+            return response('Sorry your reply could not be saved at this time' , 422);
+        }
+
     }
 
 
