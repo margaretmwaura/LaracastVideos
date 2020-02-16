@@ -9,11 +9,7 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
+
     public function boot()
     {
         \View::composer('*',function ($view){
@@ -23,13 +19,11 @@ class AppServiceProvider extends ServiceProvider
             });
             $view->with('channels',$channels);
         });
+
+       \Validator::extend('spamFree','App\Rules\SpamFree@passes');
     }
 
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
+
     public function register()
     {
         if($this->app->isLocal())

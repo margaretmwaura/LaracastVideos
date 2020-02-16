@@ -33,18 +33,19 @@ class ParticipateInForumTest extends TestCase
         $thread=factory('App\Thread')->create();
         $reply=factory('App\Reply')->make();
         $this->post($thread->path().'/replies',$reply->toArray());
-        $this->get($thread->path())
-            ->assertSee($reply->body);
+        $this->assertDatabaseHas('replies',['body'=>$reply->body]);
+        $this->assertEquals(1,$thread->fresh()->replies_count);
     }
 
     /** @test */
     function a_reply_requires_a_body()
     {
+        $this->withExceptionHandling();
         $this->withExceptionHandling()->signIn();
         $thread=factory('App\Thread')->create();
         $reply=factory('App\Reply',['body'=>null])->make();
-        $this->post($thread->path().'/replies',$reply->toArray())
-              ->assertSessionHasErrors('body');
+        $this->json('post',$thread->path().'/replies',$reply->toArray())
+            ->assertStatus(422);
     }
 
     /** @test */
@@ -69,6 +70,7 @@ class ParticipateInForumTest extends TestCase
         $this->delete("/replies/{$reply->id}")->assertStatus(302);
 
         $this->assertDatabaseMissing('replies',['id' => $reply->id]);
+        $this->assertEquals(0,$reply->thread->fresh()->replies_count);
     }
 
     /** @test */
@@ -79,6 +81,7 @@ class ParticipateInForumTest extends TestCase
         $this->patch("/replies/{$reply->id}", ['body' => 'You have been changes fool']);
 
         $this->assertDatabaseHas('replies',['id' => $reply->id,'body' => 'You have been changes fool']);
+
     }
 
     /** @test */
@@ -91,5 +94,36 @@ class ParticipateInForumTest extends TestCase
         $this->signIn()
             ->patch("/replies/{$reply->id}")
             ->assertStatus(403);
+    }
+
+    /** @test */
+    public function replies_that_contain_spam_may_not_be_created()
+    {
+        $this->withExceptionHandling();
+        $user=factory('App\User')->create();
+        $this->be($user);
+        $thread=factory('App\Thread')->create();
+        $reply=factory('App\Reply',[
+            'body' => 'Yahoo Customer Support'
+        ])->make();
+
+
+        $this->json('post',$thread->path().'/replies',$reply->toArray())
+            ->assertStatus(422);
+    }
+
+    /** @test */
+    public function users_may_only_reply_a_maximum_of_once_per_minute()
+    {
+        $this->withExceptionHandling();
+        $this->signIn();
+        $thread = create('App\Thread');
+        $reply = make('App\Reply');
+
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(200);
+
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(422);
     }
 }

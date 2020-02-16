@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Filters\ThreadFilters;
 use App\Channel;
+use App\Inspections\Spam;
 use App\Thread;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ThreadsController extends Controller
@@ -34,11 +36,12 @@ class ThreadsController extends Controller
     {
         $this->validate($request,
             [
-                'title' => 'required',
-                'body' => 'required',
+                'title' => 'required|spamFree',
+                'body' => 'required|spamFree',
                 'channel_id' => 'required|exists:channels,id'
             ]
         );
+
        $thread = Thread::create([
 
            'user_id'=>auth()->id(),
@@ -53,11 +56,12 @@ class ThreadsController extends Controller
 
     public function show($channel_id,Thread $thread)
     {
-        //
-        return view('threads.show',[
-            'thread' => $thread,
-            'replies'=>$thread->replies()->paginate(20)
-        ]);
+        if(auth()->check())
+        {
+            auth()->user()->read($thread);
+
+        }
+        return view('threads.show',compact('thread'));
     }
 
     public function edit(Thread $thread)
