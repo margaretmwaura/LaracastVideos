@@ -33,6 +33,10 @@ class User extends Authenticatable
         return 'name';
     }
 
+    public function lastReply()
+    {
+        return $this->hasOne(Reply::class)->latest();
+    }
     public function threads()
     {
         return $this->hasMany(Thread::class)->latest();
