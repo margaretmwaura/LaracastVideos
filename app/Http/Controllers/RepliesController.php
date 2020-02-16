@@ -19,11 +19,11 @@ class RepliesController extends Controller
     {
        return $thread->replies()->paginate(10);
     }
-    public function store($channel_id,Thread $thread , Spam $spam)
+    public function store($channel_id,Thread $thread )
     {
 
         try {
-            $this->validateReply();
+            $this->validate(request(), ['body' => 'required|spamFree']);
             $reply=$thread->addReply([
                 'body'=> \request('body'),
                 'user_id' => auth()->id()
@@ -53,13 +53,13 @@ class RepliesController extends Controller
        return back();
     }
 
-    public function update(Reply $reply, Spam $spam)
+    public function update(Reply $reply)
     {
         $this->authorize('update',$reply);
 
         try {
 
-            $this->validateReply();
+            $this->validate(request(), ['body' => 'required|spamFree']);
             $reply->update(['body' => request('body')]);
 
         }catch (\Exception $exception)
@@ -70,10 +70,5 @@ class RepliesController extends Controller
     }
 
 
-    protected function validateReply()
-    {
-        $this->validate(request(), ['body' => 'required']);
 
-        resolve(Spam::class)->detect(request('body'));
-    }
 }
