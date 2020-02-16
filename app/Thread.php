@@ -100,4 +100,14 @@ class Thread extends Model
             ->each
             ->notify($reply);
     }
+
+    public function hasUpdatesFor($user = null)
+    {
+        $user = $user ?: auth()->user();
+        $key = $user->visitedThreadCacheKey($this);
+        try {
+            return $this->updated_at > cache($key);
+        } catch (\Exception $e) {
+        }
+    }
 }
