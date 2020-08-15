@@ -14,14 +14,14 @@ class UserAvatarController extends Controller
 
     public function store()
     {
-      $this->validate(request() , [
-          'avatar' => ['required' , 'image']
-      ]);
+        $this->validate(request(), [
+            'avatar' => ['required', 'image']
+        ]);
 
-      auth()->user()->update([
-          'avatar_path' => \request()->file('avatar')->store('avatars','public')
-      ]);
+        auth()->user()->update([
+            'avatar_path' => request()->file('avatar')->store('avatars', 'public')
+        ]);
 
-      return back();
+        return response([], 204);
     }
 }
