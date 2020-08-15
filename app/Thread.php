@@ -114,9 +114,4 @@ class Thread extends Model
         }
     }
 
-    public function visits()
-    {
-        return new Visits($this);
-    }
-
 }
