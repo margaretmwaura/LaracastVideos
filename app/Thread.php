@@ -12,7 +12,7 @@ use function foo\func;
 class Thread extends Model
 {
     //
-    use RecordsActivity , RecordsVisit;
+    use RecordsActivity;
     protected $guarded = [];
     protected $with = ['creator','channel'];
     protected $appends = ['isSubscribedTo'];
@@ -112,6 +112,11 @@ class Thread extends Model
             return $this->updated_at > cache($key);
         } catch (\Exception $e) {
         }
+    }
+
+    public function visits()
+    {
+        return new Visits($this);
     }
 
 }
