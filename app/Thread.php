@@ -6,12 +6,13 @@ use App\Events\ThreadHasNewReply;
 use App\Events\ThreadReceivedNewReply;
 use App\Notifications\ThreadWasUpdated;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Redis;
 use function foo\func;
 
 class Thread extends Model
 {
     //
-    use RecordsActivity;
+    use RecordsActivity , RecordsVisit;
     protected $guarded = [];
     protected $with = ['creator','channel'];
     protected $appends = ['isSubscribedTo'];
@@ -112,4 +113,5 @@ class Thread extends Model
         } catch (\Exception $e) {
         }
     }
+
 }
